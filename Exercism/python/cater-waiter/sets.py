@@ -21,7 +21,7 @@ def clean_ingredients(dish_name, dish_ingredients):
     followed by the de-duped `set` of ingredients as the second item.
     """
 
-    pass
+    return (dish_name, set(dish_ingredients))
 
 
 def check_drinks(drink_name, drink_ingredients):
@@ -35,8 +35,10 @@ def check_drinks(drink_name, drink_ingredients):
     name followed by "Cocktail" (includes alcohol).
 
     """
-
-    pass
+    for each in drink_ingredients:
+        if each in ALCOHOLS:
+            return f"{drink_name} Cocktail"
+    return f"{drink_name} Mocktail"
 
 
 def categorize_dish(dish_name, dish_ingredients):
@@ -51,8 +53,17 @@ def categorize_dish(dish_name, dish_ingredients):
     All dishes will "fit" into one of the categories imported from `sets_categories_data.py`
 
     """
-
-    pass
+    if dish_ingredients.issubset(VEGAN):
+        category = "VEGAN"
+    elif dish_ingredients.issubset(VEGETARIAN):
+        category = "VEGETARIAN"
+    elif dish_ingredients.issubset(PALEO):
+        category = "PALEO"
+    elif dish_ingredients.issubset(KETO):
+        category = "KETO"
+    else:
+        category = "OMNIVORE"
+    return f"{dish_name}: {category}"
 
 
 def tag_special_ingredients(dish):
@@ -65,9 +76,12 @@ def tag_special_ingredients(dish):
     For the purposes of this exercise, all allergens or special ingredients that need to be tracked are in the
     SPECIAL_INGREDIENTS constant imported from `sets_categories_data.py`.
     """
-
-    pass
-
+    name, ingredients = dish
+    special_ings = set()
+    for each in ingredients:
+        if each in SPECIAL_INGREDIENTS:
+            special_ings.add(each)
+    return (name, special_ings)
 
 def compile_ingredients(dishes):
     """Create a master list of ingredients.
@@ -78,7 +92,10 @@ def compile_ingredients(dishes):
     This function should return a `set` of all ingredients from all listed dishes.
     """
 
-    pass
+    all_ingredients = set()
+    for dish in dishes:
+        all_ingredients = all_ingredients.union(dish)
+    return all_ingredients
 
 
 def separate_appetizers(dishes, appetizers):
@@ -92,7 +109,7 @@ def separate_appetizers(dishes, appetizers):
     Either list could contain duplicates and may require de-duping.
     """
 
-    pass
+    return list(set(dishes) - set(appetizers))
 
 
 def singleton_ingredients(dishes, intersection):
@@ -110,4 +127,15 @@ def singleton_ingredients(dishes, intersection):
     The function should return a `set` of ingredients that only appear in a single dish.
     """
 
-    pass
+    all_ingredients = set()
+    for dish in dishes:
+        all_ingredients = all_ingredients.union(dish)
+    singleton_ings = set()
+    for ingredient in all_ingredients:
+        count = 0
+        for dish in dishes:
+            if ingredient in dish and ingredient not in intersection:
+                count += 1
+        if count == 1:
+            singleton_ings.add(ingredient)
+    return singleton_ings
